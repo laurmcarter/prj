@@ -1,0 +1,207 @@
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverlappingInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE GADTs #-}
+
+module Data.Pattern where
+
+import Control.Applicative
+import Control.Arrow
+import MonadLib
+import MonadLib.Monads
+import Data.List (intersperse)
+import GHC.Exts (Constraint)
+
+-- Con {{{
+
+data family Con r :: [*] -> *
+
+data instance Con [a] rs where
+  Null :: Con [a] '[]
+  Cons :: Con [a] '[a,[a]]
+
+instance Show (Con [a] as) where
+  show c = case c of
+    Null -> "Null"
+    Cons -> "Cons"
+
+-- }}}
+
+-- Pat {{{
+
+data Pat (f :: * -> *) :: * -> * -> * -> * where
+  -- | (f r) gives us HOAS
+  Var  :: Pat f r a (f r -> a)
+  LitP :: (Eq r, Show r) => r -> Pat  f r a a
+  Con  :: Show (Con r rs) => Con r rs  -> Pats f rs a b -> Pat f r a b
+  Wild :: Pat f r a a
+
+instance Show (Pat f r a b) where
+  showsPrec d p = case p of
+    Var      -> showString "Var"
+    LitP l   -> showParen (d > 10)
+      $ showString "Lit "
+      . shows l
+    Con c ps -> showParen (d > 10)
+      $ showsPrec 11 c
+      . showChar ' '
+      . showsPrec 11 ps
+    Wild     -> showString "Wild"
+
+-- }}}
+
+-- Pats {{{
+
+data Pats (f :: * -> *) :: [*] -> * -> * -> * where
+  Nil  :: Pats f '[] a a
+  (:>) :: Pat f r b c -> Pats f rs a b -> Pats f (r ': rs) a c
+infixr 4 :>
+
+instance Show (Pats f rs a b) where
+  showsPrec d ps = case ps of
+    Nil      -> id
+    p :> ps' -> showParen (d > 4)
+      $ showsPrec 5 p
+      . showString " :> "
+      . showsPrec 4 ps'
+
+-- }}}
+
+ps0 :: Pats f '[r] b (f r -> b)
+ps0 = Var :> Nil
+
+p0 = Con Null Nil
+
+-- Exp Match {{{
+
+data Exp :: (* -> Constraint) -> * -> * where
+  Case ::  c a
+       => Exp c a
+       -> [Match (Exp c) a b]
+       -> Exp c b
+  Lit  ::  c a
+       =>  a
+       ->  Exp c a
+  Lam  :: (LamArg c a,LamRes c b)
+       => (Exp c a -> Exp c b)
+       ->  Exp c (a -> b)
+  App  :: (AppFun c a b,AppArg c a)
+       =>  Exp c (a -> b)
+       ->  Exp c a
+       ->  Exp c b
+
+data Match (f :: * -> *) :: * -> * -> * where
+  -- | (f b) gives us HOAS
+  Match :: Pat f a (f b) c -> c -> Match f a b
+
+class LitArg (c :: * -> Constraint) (a :: *)
+
+class LamArg (c :: * -> Constraint) (a :: *)
+class LamRes (c :: * -> Constraint) (a :: *)
+
+class AppFun (c :: * -> Constraint) (a :: *) (b :: *)
+class AppArg (c :: * -> Constraint) (a :: *)
+
+-- }}}
+
+type ShowG = (String,Int) -> (String,Int)
+showG :: ShowS -> ShowG
+showG = first
+
+showg :: Show a => a -> ShowG
+showg = showG . shows
+
+chr :: Char -> ShowG
+chr = showG . showChar
+
+str :: String -> ShowG
+str = showG . showString
+
+par :: Bool -> ShowG -> ShowG
+par b p = if b
+  then chr '(' . p . chr ')'
+  else p
+
+fresh :: (Int -> ShowG) -> ShowG
+fresh f (s,i) = f i (s,succ i)
+
+showExp :: Int -> Exp Show a -> ShowG
+showExp d e = case e of
+  Lit a     -> showg a
+  App f x   -> par (d > 10)
+    $ showExp 11 f
+    . chr ' '
+    . showExp 11 x
+  Lam f     -> par (d > 10)
+    $ fresh $ \i ->
+    let x = "x" ++ show i
+    in  str ("\\" ++ x ++ " -> ")
+      . id
+  Case e ms -> undefined
+
+instance (Show a, AppFun Show b c) => AppFun Show a (b -> c) where
+instance (Show a, Show b)          => AppFun Show a b
+
+-- GenT {{{
+
+type Gen = GenT Id
+
+newtype GenT m a = GenT
+  { runGenT :: StateT Int m a
+  }
+
+deriving instance (Functor m, Monad m) => Functor     (GenT m)
+deriving instance (Functor m, Monad m) => Applicative (GenT m)
+deriving instance             Monad m  => Monad       (GenT m)
+
+instance Monad m => StateM (GenT m) Int where
+  get = GenT   get
+  set = GenT . set
+
+instance BaseM m n => BaseM (GenT m) n where
+  inBase = GenT . inBase
+
+instance RunM m (a,Int) b => RunM (GenT m) a (Int -> b) where
+  runM = runM . runGenT
+
+-- }}}
+
+-- U {{{
+
+class    U a
+instance U a
+
+instance AppFun U a b
+instance AppArg U a
+
+instance LamArg U a
+instance LamRes U a
+
+-- }}}
+
+t0 :: c [Int] => Exp c [Int]
+t0 = Case (Lit ([0..2] :: [Int]))
+  [ Match Var $ \as -> as
+  ]
+
+t1 :: (c [a], LamArg c [a], LamRes c [a]) => Exp c ([a] -> [a])
+t1 = Lam $ \x -> Case x
+  [ Match (Con Null Nil) x
+  , Match (Con Cons $ Wild :> Var :> Nil) $ \as -> as
+  ]
+
+t2 :: (c [Int], LamArg c [Int], LamRes c [Int], AppFun c [Int] [Int], AppArg c [Int])
+  => Exp c [Int]
+t2 = App t1 $ Lit [(0::Int)..2]
+

@@ -1,0 +1,11 @@
+
+add executable
+  -- copy dependencies of library, add library as dep
+
+add module to library
+  -- create dummy module with module header
+
+add dependency
+  -- add to library and executables
+  -- reinstall
+

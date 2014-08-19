@@ -1,0 +1,31 @@
+Configuring sunroof-compiler-0.2...
+Building sunroof-compiler-0.2...
+Preprocessing library sunroof-compiler-0.2...
+[ 1 of 23] Compiling Language.Sunroof.Internal ( Language/Sunroof/Internal.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Internal.o )
+[ 2 of 23] Compiling Language.Sunroof.JavaScript ( Language/Sunroof/JavaScript.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JavaScript.o )
+
+Language/Sunroof/JavaScript.hs:31:1: Warning:
+    The import of ‘Applicative’
+    from module ‘Control.Applicative’ is redundant
+[ 3 of 23] Compiling Language.Sunroof.Classes ( Language/Sunroof/Classes.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Classes.o )
+[ 4 of 23] Compiling Language.Sunroof.JS.Bool ( Language/Sunroof/JS/Bool.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Bool.o )
+[ 5 of 23] Compiling Language.Sunroof.JS.Object ( Language/Sunroof/JS/Object.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Object.o )
+[ 6 of 23] Compiling Language.Sunroof.JS.Number ( Language/Sunroof/JS/Number.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Number.o )
+[ 7 of 23] Compiling Language.Sunroof.JS.String ( Language/Sunroof/JS/String.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/String.o )
+[ 8 of 23] Compiling Language.Sunroof.Selector ( Language/Sunroof/Selector.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Selector.o )
+[ 9 of 23] Compiling Language.Sunroof.Types ( Language/Sunroof/Types.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Types.o )
+
+Language/Sunroof/Types.hs:297:10:
+    Could not deduce (Sunroof r0)
+      arising from the ambiguity check for an instance declaration
+    from the context (SunroofArgument a, Sunroof r)
+      bound by an instance declaration:
+                 (SunroofArgument a, Sunroof r) => IfB (JSContinuation a)
+      at Language/Sunroof/Types.hs:297:10-65
+    The type variable ‘r0’ is ambiguous
+    In the ambiguity check for:
+      forall a r.
+      (SunroofArgument a, Sunroof r) =>
+      IfB (JSContinuation a)
+    To defer the ambiguity check to use sites, enable AllowAmbiguousTypes
+    In the instance declaration for ‘IfB (JSContinuation a)’

@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>data-reify-0.6: Reify a recursive data structure into an explicit graph.</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">data-reify-0.6: Reify a recursive data structure into an explicit graph.</p></div><div id="content"><div id="description"><h1>data-reify-0.6: Reify a recursive data structure into an explicit graph.</h1><div class="doc"><p>'data-reify' provided the ability to turn recursive structures into explicit graphs.
+Many (implicitly or explicitly) recursive data structure can be given this ability, via
+a type class instance. This gives an alternative to using <code>Ref</code> for observable sharing.</p><p>Observable sharing in general is unsafe, so we use the IO monad to bound this effect,
+but can be used safely even with <code>unsafePerformIO</code> if some simple conditions are met.
+Typically this package will be used to tie the knot with DSL's that depend of
+observable sharing, like Lava.</p><p>Providing an instance for <code>MuRef</code> is the mechanism for allowing a structure to be
+reified into a graph, and several examples of this are provided.</p><p>History:
+Version 0.1 used unsafe pointer compares.
+Version 0.2 of 'data-reify' used <code>StableName</code>s, and was much faster.
+Version 0.3 provided two versions of <code>MuRef</code>, the mono-typed version,
+for trees of a single type,
+and the dynamic-typed version, for trees of different types.
+Version 0.4 used <code>Int</code> as a synonym for <code>Unique</code> rather than <code>Unique</code>
+for node ids, by popular demand.
+Version 0.5 merged the mono-typed and dynamic version again, by using
+<code>DynStableName</code>, an unphantomized version of StableName.</p><p>&#169; 2009 Andy Gill; BSD3 license.</p></div></div><div id="module-list"><p class="caption">Modules</p><ul><li><span id="control.n.1" class="module collapser" onclick="toggleSection('n.1')">Data</span><ul id="section.n.1" class="show"><li><span class="module"><span id="control.n.1.1" class="collapser" onclick="toggleSection('n.1.1')">&nbsp;</span><a href="Data-Reify.html">Data.Reify</a></span><ul id="section.n.1.1" class="show"><li><span class="module"><a href="Data-Reify-Graph.html">Data.Reify.Graph</a></span></li></ul></li></ul></li></ul></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.14.2</p></div></body></html>

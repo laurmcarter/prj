@@ -1,0 +1,255 @@
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DefaultSignatures #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+
+module Diagrams.Simplex where
+
+import Control.Lens
+import Data.Proxy
+import Data.Void
+
+import Diagrams.Coordinates
+import Diagrams.TwoD.Types (R2)
+import Diagrams.ThreeD.Types (R3)
+
+type R0 = ()
+type R1 = Double
+
+-- Dimensional {{{
+
+type NPlus1 r a = N r a :& a
+type NSubK r k a = N (DimSubK r k) a
+type NSubKPlus1 r k a = NSubK r k a :& a
+
+class Dimensional r where
+  -- provide defaults for inductive cases,
+  --   define the base cases specifically
+  type LowerDim r :: *
+  type LowerDim r = PrevDim r
+  type N r a :: *
+  type N r a = NPlus1 (LowerDim r) a
+  type DimSubK r k :: *
+  type DimSubK r () = r
+  type DimSubK r (n :& b) = DimSubK (LowerDim r) n
+
+  mapDim :: Proxy r -> (a -> b) -> N r a -> N r b
+  default mapDim ::
+    -- both sides must be equated,
+    --   since the associated type N must be indexed over both r and a,
+    --   since type synonyms must be saturated, 
+    --   i.e. NPlus1 can't be written
+    --   > type NPlus1 r = \a -> N r a :& a
+    ( N r a ~ (N (LowerDim r) a :& a)
+    , N r b ~ (N (LowerDim r) b :& b)
+    , Simplicial (LowerDim r)
+    ) => Proxy r -> (a -> b) -> N r a -> N r b
+  mapDim _ (f :: a -> b) (s :& p) = g s :& f p
+    where
+    g = mapDim (Proxy :: Proxy (LowerDim r)) f
+
+instance Dimensional R0 where
+  -- base cases for N and mapDim, (sub)base case for LowerDim
+  type LowerDim R0 = Void
+  type N R0 a = ()
+  type DimSubK R0 () = ()
+  type DimSubK R0 (n :& b) = Void
+  mapDim _ _ _ = ()
+
+instance Dimensional R1 where
+  -- base case for dimensionality,
+  --   since Double has no instance for Coordinates
+  type LowerDim R1 = R0
+
+instance Dimensional R2 where
+
+instance Dimensional R3 where
+
+r0 :: Proxy R0
+r0 = Proxy
+r1 :: Proxy R1
+r1 = Proxy
+r2 :: Proxy R2
+r2 = Proxy
+r3 :: Proxy R3
+r3 = Proxy
+
+-- }}}
+
+-- Adding {{{
+
+-- type restriction for natural number-like containers () and (:&)
+type family Replace m a :: *
+type instance Replace () a = ()
+type instance Replace (m :& b) a = Replace m a :& a
+
+class Replacing m a where
+  replace :: Proxy a -> m -> Replace m a
+
+instance Replacing () a where
+  replace _ _ = ()
+
+instance (Replacing m a) => Replacing (m :& a) a where
+  replace prx (m :& a) = replace prx m :& a
+
+type family Add m n a :: *
+-- basis: m + 0 = m
+type instance Add m () a = Replace m a
+-- induction: m + (n + 1) = (m + n) + 1
+type instance Add m (n :& b) a = Add m n a :& a
+
+class (Replacing m a) => Adding m n a where
+  add :: Proxy a -> m -> n -> Add m n a
+
+instance (Replacing m a) => Adding m () a where
+  add prx m _ = replace prx m
+
+instance (Adding m n a) => Adding m (n :& a) a where
+  add prx m (n :& a) = add prx m n :& a
+
+-- }}}  
+
+-- Subtracting {{{
+
+type family Sub m n a :: *
+type instance Sub () () a = ()
+-- Need family instance for absurd negative numbers?
+-- type instance Sub () (n :& c) a = Void
+type instance Sub (m :& b) () a = Replace m a :& a
+type instance Sub (m :& b) (n :& c) a = Sub m n a
+
+class (Replacing m a) => Subtracting m n a where
+  sub :: Proxy a -> m -> n -> Sub m n a
+
+instance Subtracting () () a where
+  sub _ _ _ = ()
+
+instance (Replacing m a) => Subtracting (m :& a) () a where
+  sub prx (m :& a) _ = replace prx m :& a
+
+-- }}}
+
+-- Choosing {{{
+
+type family Choose n k a :: *
+-- 0 choose 0 = 1
+type instance Choose       ()       () a = () :& a
+-- 0 choose (n + 1) = 0
+type instance Choose       () (k :& c) a = ()
+-- (n + 1) choose 0 = 1
+type instance Choose (n :& b)       () a = () :& a
+-- (n + 1) choose (k + 1) = n choose k + n choose (k + 1)
+type instance Choose (n :& b) (k :& c) a = Add (Choose n k a) (Choose n (k :& c) a) a
+
+class Choosing n k a where
+  choose :: Proxy k -> Proxy a -> n -> Choose n k k
+
+instance Choosing () () a where
+  choose _ _ n = () :& n
+
+instance Choosing () (k :& a) a where
+  choose _ _ _ = ()
+
+instance Choosing (n :& a) () a where
+  choose _ _ _ = () :& ()
+
+instance
+  ( Choosing n k a
+  , Choosing n (k :& a) a
+  ) => Choosing (n :& a) (k :& a) a where
+  choose (prk :: Proxy (k :& a)) pra s@(n :& a) = undefined -- add prka n1 n2
+    where
+    prk' = Proxy :: Proxy k
+    n1   = choose prk' pra n
+    n2   = choose prk  pra n
+    -- add' = add prk' n1 n2
+
+-- (Adding (Choose n k k) (Choose n (k :& a) (k :& a)) k)
+
+-- }}}
+
+-- Simplicial {{{
+
+toVertices :: Simplicial r => Simplex r a -> NPlus1 r a
+toVertices = view $ from _Simplex
+
+fromVertices :: Simplicial r => NPlus1 r a -> Simplex r a
+fromVertices = view _Simplex
+
+simplex :: Simplicial r => a -> N r a -> Simplex r a
+simplex p s = fromVertices $ s :& p
+
+class Dimensional r => Simplicial r where
+  data Simplex r a :: *
+  _Simplex :: Iso (NPlus1 r a) (NPlus1 r b) (Simplex r a) (Simplex r b)
+
+instance Simplicial R0 where
+  data Simplex R0 a = R0Simplex !a
+  _Simplex = iso toSimplex fromSimplex
+    where
+    toSimplex (_ :& a) = R0Simplex a
+    fromSimplex (R0Simplex a) = () :& a
+
+instance Simplicial R1 where
+  data Simplex R1 a = R1Simplex !a !a
+  _Simplex = iso toSimplex fromSimplex 
+    where
+    toSimplex (_ :& a :& b) = R1Simplex a b
+    fromSimplex (R1Simplex a b) = () :& a :& b
+
+instance Simplicial R2 where
+  data Simplex R2 a = R2Simplex !a !a !a
+  _Simplex = iso toSimplex fromSimplex
+    where
+    toSimplex (_ :& a :& b :& c) = R2Simplex a b c
+    fromSimplex (R2Simplex a b c) = () :& a :& b :& c
+
+instance Simplicial R3 where
+  data Simplex R3 a = R3Simplex !a !a !a !a
+  _Simplex  = iso toSimplex fromSimplex
+    where
+    toSimplex (_ :& a :& b :& c :& d) = R3Simplex a b c d
+    fromSimplex (R3Simplex a b c d) = (() :& a :& b :& c :& d)
+
+-- }}}
+
+-- Faces {{{
+
+{-
+type LowerSimplex r k = Simplex (DimSubK r k)
+
+type SimplexFace r k a = Simplex (DimSubK r k) a
+
+class (Simplicial r) => Faces r k where
+  faces :: Proxy k -> Simplex r a -> Choose (NPlus1 r a) (NSubKPlus1 r k a) (LowerSimplex r k a)
+
+instance Faces R0 () where
+  faces _ s = () :& s
+
+
+instance Faces R1 () where
+  faces _ s = () :& s
+instance Faces R1 (() :& a) where
+  faces _ s = mapDim r2 R0Simplex $ toVertices s
+
+
+instance Faces R2 () where
+  faces _ s = () :& s
+instance Faces R2 (() :& a) where
+  faces _ s = undefined
+    where
+    map2 = undefined -- mapDim r2 (fromVertices . (:& c)) :: N R2 (N R1 a) -> N R2 (Simplex R1 a)
+    ab :& c = toVertices s
+
+instance Faces R3 () where
+  faces _ s = () :& s
+-}
+
+-- }}}
+

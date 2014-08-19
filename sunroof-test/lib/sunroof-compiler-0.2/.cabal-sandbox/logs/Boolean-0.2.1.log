@@ -1,0 +1,36 @@
+Configuring Boolean-0.2.1...
+Building Boolean-0.2.1...
+Preprocessing library Boolean-0.2.1...
+[1 of 3] Compiling Data.Boolean     ( src/Data/Boolean.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean.o )
+[2 of 3] Compiling Data.Boolean.Overload ( src/Data/Boolean/Overload.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean/Overload.o )
+
+src/Data/Boolean/Overload.hs:30:1: Warning:
+    The import of ‘Prelude’ is redundant
+      except perhaps to import instances from ‘Prelude’
+    To import instances alone, use: import Prelude()
+[3 of 3] Compiling Data.Boolean.Numbers ( src/Data/Boolean/Numbers.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean/Numbers.o )
+[1 of 3] Compiling Data.Boolean     ( src/Data/Boolean.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean.p_o )
+[2 of 3] Compiling Data.Boolean.Overload ( src/Data/Boolean/Overload.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean/Overload.p_o )
+
+src/Data/Boolean/Overload.hs:30:1: Warning:
+    The import of ‘Prelude’ is redundant
+      except perhaps to import instances from ‘Prelude’
+    To import instances alone, use: import Prelude()
+[3 of 3] Compiling Data.Boolean.Numbers ( src/Data/Boolean/Numbers.hs, dist/dist-sandbox-b409b4a/build/Data/Boolean/Numbers.p_o )
+In-place registering Boolean-0.2.1...
+Running Haddock for Boolean-0.2.1...
+Preprocessing library Boolean-0.2.1...
+
+dist/dist-sandbox-b409b4a/build/tmp-11480/src/Data/Boolean/Overload.hs:30:1: Warning:
+    The import of ‘Prelude’ is redundant
+      except perhaps to import instances from ‘Prelude’
+    To import instances alone, use: import Prelude()
+Haddock coverage:
+ 100% ( 14 / 14) in 'Data.Boolean'
+  14% (  2 / 14) in 'Data.Boolean.Overload'
+ 100% (  8 /  8) in 'Data.Boolean.Numbers'
+Documentation created: dist/dist-sandbox-b409b4a/doc/html/Boolean/index.html
+Creating package registration file: /tmp/pkgConf-Boolean-0.210822.1
+Installing library in
+/home/kcarter/scrap/haskell/sunroof-test/lib/sunroof-compiler-0.2/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.2/Boolean-0.2.1
+Registering Boolean-0.2.1...

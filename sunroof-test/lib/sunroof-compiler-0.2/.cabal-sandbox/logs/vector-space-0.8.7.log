@@ -1,0 +1,41 @@
+Configuring vector-space-0.8.7...
+Building vector-space-0.8.7...
+Preprocessing library vector-space-0.8.7...
+[1 of 8] Compiling Data.AdditiveGroup ( src/Data/AdditiveGroup.hs, dist/dist-sandbox-b409b4a/build/Data/AdditiveGroup.o )
+[2 of 8] Compiling Data.VectorSpace ( src/Data/VectorSpace.hs, dist/dist-sandbox-b409b4a/build/Data/VectorSpace.o )
+[3 of 8] Compiling Data.Basis       ( src/Data/Basis.hs, dist/dist-sandbox-b409b4a/build/Data/Basis.o )
+[4 of 8] Compiling Data.AffineSpace ( src/Data/AffineSpace.hs, dist/dist-sandbox-b409b4a/build/Data/AffineSpace.o )
+[5 of 8] Compiling Data.LinearMap   ( src/Data/LinearMap.hs, dist/dist-sandbox-b409b4a/build/Data/LinearMap.o )
+[6 of 8] Compiling Data.Maclaurin   ( src/Data/Maclaurin.hs, dist/dist-sandbox-b409b4a/build/Data/Maclaurin.o )
+[7 of 8] Compiling Data.Derivative  ( src/Data/Derivative.hs, dist/dist-sandbox-b409b4a/build/Data/Derivative.o )
+[8 of 8] Compiling Data.Cross       ( src/Data/Cross.hs, dist/dist-sandbox-b409b4a/build/Data/Cross.o )
+[1 of 8] Compiling Data.AdditiveGroup ( src/Data/AdditiveGroup.hs, dist/dist-sandbox-b409b4a/build/Data/AdditiveGroup.p_o )
+[2 of 8] Compiling Data.VectorSpace ( src/Data/VectorSpace.hs, dist/dist-sandbox-b409b4a/build/Data/VectorSpace.p_o )
+[3 of 8] Compiling Data.Basis       ( src/Data/Basis.hs, dist/dist-sandbox-b409b4a/build/Data/Basis.p_o )
+[4 of 8] Compiling Data.AffineSpace ( src/Data/AffineSpace.hs, dist/dist-sandbox-b409b4a/build/Data/AffineSpace.p_o )
+[5 of 8] Compiling Data.LinearMap   ( src/Data/LinearMap.hs, dist/dist-sandbox-b409b4a/build/Data/LinearMap.p_o )
+[6 of 8] Compiling Data.Maclaurin   ( src/Data/Maclaurin.hs, dist/dist-sandbox-b409b4a/build/Data/Maclaurin.p_o )
+[7 of 8] Compiling Data.Derivative  ( src/Data/Derivative.hs, dist/dist-sandbox-b409b4a/build/Data/Derivative.p_o )
+[8 of 8] Compiling Data.Cross       ( src/Data/Cross.hs, dist/dist-sandbox-b409b4a/build/Data/Cross.p_o )
+In-place registering vector-space-0.8.7...
+Running Haddock for vector-space-0.8.7...
+Preprocessing library vector-space-0.8.7...
+Haddock coverage:
+ 100% (  7 /  7) in 'Data.AdditiveGroup'
+ 100% ( 12 / 12) in 'Data.VectorSpace'
+  50% (  2 /  4) in 'Data.Basis'
+  86% (  6 /  7) in 'Data.AffineSpace'
+  59% ( 10 / 17) in 'Data.LinearMap'
+Warning: Data.Maclaurin: powVal is exported separately but will be documented under D. Consider exporting it together with its parent(s) for code clarity.
+Warning: Data.Maclaurin: derivative is exported separately but will be documented under D. Consider exporting it together with its parent(s) for code clarity.
+  80% ( 16 / 20) in 'Data.Maclaurin'
+ 100% (  2 /  2) in 'Data.Derivative'
+ 100% (  8 /  8) in 'Data.Cross'
+Warning: Data.LinearMap: could not find link destinations for:
+    Data.LinearMap.LMap' Data.LinearMap.MSum
+Documentation created:
+dist/dist-sandbox-b409b4a/doc/html/vector-space/index.html
+Creating package registration file: /tmp/pkgConf-vector-space-0.810822.7
+Installing library in
+/home/kcarter/scrap/haskell/sunroof-test/lib/sunroof-compiler-0.2/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.2/vector-space-0.8.7
+Registering vector-space-0.8.7...

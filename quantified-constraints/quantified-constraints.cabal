@@ -1,0 +1,22 @@
+name: quantified-constraints
+version: 0.1.0.0
+cabal-version: >=1.10
+build-type: Simple
+license: BSD3
+license-file: LICENSE
+maintainer: kcarter@galois.com
+ 
+library
+    build-depends:
+        base -any
+    exposed-modules:
+        Data.Constraint.Choice
+        Data.Type.Equality.Bool
+        Data.Constraint.Member
+        Data.Constraint.Quantified
+    exposed: True
+    buildable: True
+    default-language: Haskell2010
+    hs-source-dirs: src
+ 
+ 

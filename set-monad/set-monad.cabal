@@ -1,0 +1,20 @@
+name: set-monad
+version: 0.1.0.0
+cabal-version: >=1.10
+build-type: Simple
+license: BSD3
+license-file: LICENSE
+maintainer: kcarter@galois.com
+ 
+library
+    build-depends:
+        containers -any,
+        base -any
+    exposed-modules:
+        Control.Monad.Set
+    exposed: True
+    buildable: True
+    default-language: Haskell2010
+    hs-source-dirs: src
+ 
+ 

@@ -1,0 +1,68 @@
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverlappingInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
+
+module Prelude.Compose where
+
+import Control.Applicative hiding ((<**>))
+import Data.Function (on)
+import Data.Monoid
+import Data.Proxy
+import Data.Type.Equality
+import Data.Functor.Contravariant
+
+class Compose f g r | f g -> r where
+  comp :: f -> g -> r
+
+instance Compose (b -> c) (a -> b) (a -> c) where
+  comp = (.)
+
+instance Compose f g r => Compose f (a -> g) (a -> r) where
+  comp f g = comp f . g
+
+(.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+(.:) = comp
+
+(.:.) :: (d -> e) -> (a -> b -> c -> d) -> a -> b -> c -> e
+(.:.) = comp
+
+class IsFunction (t :: *) (b :: Bool) | t -> b
+instance b ~ True  => IsFunction (x -> y) b
+instance b ~ False => IsFunction a        b
+
+data Args (as :: [*]) r where
+  Base :: r -> Args '[] r
+  Arg  :: Args as (a -> r) -> Args (a ': as) r
+
+instance Functor (Args as) where
+  fmap f as = case as of
+    Base a -> Base $ f a
+    Arg  g -> Arg  $ fmap (fmap f) g
+
+class ContraArgs (as :: [*]) (bs :: [*]) (a :: *) (b :: *)
+  | as b -> bs, bs a -> as where
+  cmap :: (a -> b) -> Args bs r -> Args as r
+
+instance ContraArgs '[] '[] a b where
+  cmap f (Base r) = Base r
+
+{-
+instance ContraArgs as bs a b => ContraArgs (a ': as) (b ': bs) a b where
+  cmap f (Arg g)  = Arg $ _
+-}
+
+newtype F a r = F
+  { runF :: r -> a
+  }
+
+instance Contravariant (F a) where
+  contramap f (F m) = F $ m . f
+

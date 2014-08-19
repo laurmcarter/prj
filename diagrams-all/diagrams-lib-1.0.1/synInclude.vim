@@ -1,0 +1,3 @@
+
+hi Normal ctermbg=Black
+

@@ -1,0 +1,261 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE GADTs #-}
+
+module Control.Final where
+
+import Prelude hiding ((+),(-),(*),(==))
+import qualified Prelude
+import GHC.Exts (Constraint)
+import Data.Foldable (Foldable)
+import qualified Data.Foldable as F
+import Data.Traversable (Traversable)
+import qualified Data.Traversable as T
+
+-- Final1 {{{
+
+class Quant1 c (Init1 c)
+  => Final1 (c :: (k -> *) -> Constraint) where
+  data Init1 c :: (k -> *) -> k -> *
+  interp1  :: c r => Init1 c r a -> r a
+  lift1    :: r a -> Init1 c r a
+  mapOpen1 :: (r :-> s) -> Init1 c r a -> Init1 c s a
+
+initial1 :: Final1 c => Init1 c r a -> Init1 c r a
+initial1 = id
+
+joinOpen1 :: (Final1 c, c r) => Init1 c (Init1 c r) a -> Init1 c r a
+joinOpen1 = mapOpen1 interp1
+
+joinClosed1 :: forall c r a. Final1 c
+  => Init1 c (Init1 c r) a -> Init1 c r a
+joinClosed1 = interp1 \\ (inst1 :: Dict (c (Init1 c r)))
+
+-- }}}
+
+-- Util {{{
+
+data Dict (c :: Constraint) where
+  Dict :: c => Dict c
+
+(\\) :: (c => r) -> Dict c -> r
+r \\ Dict = r
+infixl 4 \\
+
+class Quant1 (c :: l -> Constraint) (f :: k -> l) where
+  inst1 :: Dict (c (f x))
+
+class Quant2 (c :: m -> Constraint) (f :: k -> l -> m) where
+  inst2 :: Dict (c (f x y))
+
+class Quant3 (c :: n -> Constraint) (f :: k -> l -> m -> n) where
+  inst3 :: Dict (c (f x y z))
+
+type f   :-> g = forall x. f x   -> g x
+type f  ::-> g = forall x. f x  :-> g x
+type f :::-> g = forall x. f x ::-> g x
+
+-- }}}
+
+-- Arith 
+
+-- Class, Final, Initial Defs {{{
+
+class Arith r where
+  int  :: Int -> r Int
+  (+)  :: r Int -> r Int -> r Int
+  (-)  :: r Int -> r Int -> r Int
+  (*)  :: r Int -> r Int -> r Int
+  (==) :: Eq a => r a -> r a -> r Bool
+  if_  :: r Bool -> r a -> r a -> r a
+  infixl 6 +, -
+  infixl 7 *
+  infix  4 ==
+
+instance Final1 Arith where
+  data Init1 Arith r a where
+    Int  :: Int      -> A r Int
+    Add  :: A r Int  -> A r Int -> A r Int
+    Sub  :: A r Int  -> A r Int -> A r Int
+    Mul  :: A r Int  -> A r Int -> A r Int
+    Eql  :: Eq a
+         => A r a    -> A r a   -> A r Bool
+    If   :: A r Bool -> A r a   -> A r a    -> A r a
+    ALft ::   r a    -> A r a
+  interp1 t = case t of
+    Int  i     -> int i
+    Add  x y   -> interp1 x +  interp1 y
+    Sub  x y   -> interp1 x -  interp1 y
+    Mul  x y   -> interp1 x *  interp1 y
+    Eql  x y   -> interp1 x == interp1 y
+    If   t c a -> if_ (interp1 t) (interp1 c) (interp1 a)
+    ALft x     -> x
+  lift1 = ALft
+  mapOpen1 f t = case t of
+    Int  i     -> Int i
+    Add  x y   -> Add (mapOpen1 f x) (mapOpen1 f y)
+    Sub  x y   -> Sub (mapOpen1 f x) (mapOpen1 f y)
+    Mul  x y   -> Mul (mapOpen1 f x) (mapOpen1 f y)
+    Eql  x y   -> Eql (mapOpen1 f x) (mapOpen1 f y)
+    If   t c a -> If  (mapOpen1 f t) (mapOpen1 f c) (mapOpen1 f a)
+    ALft x     -> ALft (f x)
+
+type A = Init1 Arith
+
+instance Arith (A r) where
+  int  = Int
+  (+)  = Add
+  (-)  = Sub
+  (*)  = Mul
+  (==) = Eql
+  if_  = If
+
+instance Quant1 Arith (Init1 Arith) where
+  inst1 = Dict
+
+-- Initial instances {{{
+
+instance Quant1 Show r => Quant1 Show (Init1 Arith r) where
+  inst1 = Dict
+
+instance Quant1 Show r => Show (Init1 Arith r a) where
+  showsPrec d t = showParen (d > 10) $
+    case t of
+      Int  i     -> showString "Int "
+                  . shows i
+      Add  x y   -> showString "Add "
+                  . showsPrec 11 x
+                  . showChar ' '
+                  . showsPrec 11 y
+      Sub  x y   -> showString "Sub "
+                  . showsPrec 11 x
+                  . showChar ' '
+                  . showsPrec 11 y
+      Mul  x y   -> showString "Mul "
+                  . showsPrec 11 x
+                  . showChar ' '
+                  . showsPrec 11 y
+      Eql  x y   -> showString "Eql "
+                  . showsPrec 11 x
+                  . showChar ' '
+                  . showsPrec 11 y
+      If   t c a -> showString "If "
+                  . showsPrec 11 t
+                  . showChar ' '
+                  . showsPrec 11 c
+                  . showChar ' '
+                  . showsPrec 11 a
+      ALft (x :: r a)
+                 -> showString "ALft "
+                  . ( showsPrec 11 x
+                   \\ (inst1 :: Dict (Show (r a)))
+                    )
+
+-- }}}
+
+-- }}}
+
+-- Render {{{
+
+newtype S (a :: *) = S
+  { sPrec :: Int -> ShowS
+  }
+
+instance Arith S where
+  int i = S $ \_ -> shows i
+  x + y = S $ \d -> showParen (d > 6)
+    $ sPrec x 7
+    . showString " + "
+    . sPrec y 7
+  x - y = S $ \d -> showParen (d > 6)
+    $ sPrec x 7
+    . showString " - "
+    . sPrec y 7
+  x * y = S $ \d -> showParen (d > 7)
+    $ sPrec x 8
+    . showString " * "
+    . sPrec y 8
+  x == y = S $ \d -> showParen (d > 4)
+    $ sPrec x 5
+    . showString " == "
+    . sPrec y 8
+  if_ t c a = S $ \d -> showParen (d > 10)
+    $ showString "if "
+    . sPrec t 0
+    . showString " then "
+    . sPrec c 0
+    . showString " else "
+    . sPrec a 0
+
+render :: S a -> S a
+render = id
+
+renderInitial :: A S a -> A S a
+renderInitial = id
+
+instance Show (S a) where
+  showsPrec d (S f) = f d
+
+instance Quant1 Show S where
+  inst1 = Dict
+
+-- }}}
+
+-- Eval {{{
+
+newtype E a = E
+  { eval :: a
+  }
+
+instance Arith E where
+  int       = E
+  x + y     = E $ eval x Prelude.+ eval y
+  x - y     = E $ eval x Prelude.- eval y
+  x * y     = E $ eval x Prelude.* eval y
+  x == y    = E $ eval x Prelude.== eval y
+  if_ t c a = E $ if eval t then eval c else eval a
+
+evalInitial :: A E a -> A E a
+evalInitial = id
+
+{-
+instance ShowF E where
+  showsPrecF d _ =
+      showParen (d > 10)
+    $ showString "E {}"
+-}
+
+-- }}}
+
+-- Examples {{{
+
+type Def a = forall r. Arith r => r a
+
+e0 :: Def Int
+e0 = int 4
+
+e1 :: Def Int
+e1 = e0 + int 3
+
+e2 :: Def Bool
+e2 = e1 == int 7
+
+e3 :: Def Int
+e3 = if_
+  (int 3 == int 1 + int 2)
+  (int 4)
+  (int 5)
+
+-- }}}
+

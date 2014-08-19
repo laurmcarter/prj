@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Language.Sunroof.TH</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Language-Sunroof-TH.html");};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">sunroof-compiler-0.2.1: Monadic Javascript Compiler</p></div><div id="content"><div id="module-header"><table class="info"><tr><th>Safe Haskell</th><td>None</td></tr><tr><th>Language</th><td>Haskell2010</td></tr></table><p class="caption">Language.Sunroof.TH</p></div><div id="description"><p class="caption">Description</p><div class="doc"><p>Provides template Haskell code to generate instances for JavaScript
+   object wrappers (<a href="https://github.com/ku-fpg/sunroof-compiler/wiki/JSObject-Wrapper-Types">https://github.com/ku-fpg/sunroof-compiler/wiki/JSObject-Wrapper-Types</a>).</p></div></div><div id="synopsis"><p id="control.syn" class="caption expander" onclick="toggleSection('syn')">Synopsis</p><ul id="section.syn" class="hide" onclick="toggleSection('syn')"><li class="src short"><a href="#v:deriveJSTuple">deriveJSTuple</a> :: <a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Q">Q</a> [<a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Dec">Dec</a>] -&gt; <a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Q">Q</a> [<a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Dec">Dec</a>]</li></ul></div><div id="interface"><h1>Documentation</h1><div class="top"><p class="src"><a name="v:deriveJSTuple" class="def">deriveJSTuple</a> :: <a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Q">Q</a> [<a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Dec">Dec</a>] -&gt; <a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Q">Q</a> [<a href="file:///home/kcarter/.ghc_versions/7.8.2/share/doc/ghc/html/libraries/template-haskell-2.9.0.0/Language-Haskell-TH-Syntax.html#t:Dec">Dec</a>]</p><div class="doc"><p><code>derive</code> derives an incomplete instance for <code>JSTuple</code>,
+ as well as completing other classes.</p><p>you write the newtype explictly, and <code>derive</code> does the rest.</p><pre>newtype JSX o = JSX JSObject</pre><p>and then the start of the JSTuple instance, and the rest gets filled in</p><pre>derive [d| instance (SunroofArgument o) =&gt; JSTuple (JSX o) where
+               type Internals (JSX o) = (JSString,JSNumber)
+       |]</pre><p>generates</p><pre>instance (SunroofArgument o) =&gt; Show (JSX o) where
+   show (JSX o) = show o
+
+instance (SunroofArgument o) =&gt; Sunroof (JSX o) where
+   unbox (JSX o) = unbox o
+   box o = JSX (box o)
+
+instance (SunroofArgument o) =&gt; IfB (JSX o) where
+   ifB = jsIfB
+
+type instance BooleanOf (JSX o) = JSBool
+
+instance (SunroofArgument o) =&gt; JSTuple (JSX o) where
+   type instance Internals (JSX o) = (JSString, JSNumber)
+   match o = (o ! attr &quot;f1&quot;, o ! attr &quot;f2&quot;)
+   tuple (v1,v2) = do
+       o &lt;- new &quot;Object&quot; ()
+       o # attr &quot;f1&quot; := v1
+       o # attr &quot;f2&quot; := v2
+       return (JSX o)</pre></div></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.14.2</p></div></body></html>

@@ -1,0 +1,24 @@
+
+package: direct-sqlite-2.3.6
+os: linux
+arch: x86_64
+compiler: ghc-7.6.3
+client: cabal-install-1.18.0.1
+flags: -systemlib fulltextsearch
+dependencies: text-0.11.2.3 bytestring-0.10.0.2 base-4.6.0.1
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: sqlite-simple-0.4.3.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.3
+client: cabal-install-1.18.0.1
+flags:
+dependencies: transformers-0.3.0.0 time-1.4.0.1 text-0.11.2.3
+              old-locale-1.0.0.5 direct-sqlite-2.3.6 containers-0.5.0.0
+              bytestring-0.10.0.2 base-4.6.0.1
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried

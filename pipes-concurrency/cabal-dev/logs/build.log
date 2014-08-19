@@ -1,0 +1,78 @@
+
+package: mmorph-1.0.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags:
+dependencies: transformers-0.3.0.0 base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: pipes-3.3.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags:
+dependencies: transformers-0.3.0.0 mmorph-1.0.0 base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: pipes-concurrency-1.1.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags:
+dependencies: transformers-0.3.0.0 stm-2.4.2 pipes-3.3.0
+              base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: stm-2.4.2
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags: base4
+dependencies: base-4.6.0.0 array-0.4.0.1
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: transformers-0.3.0.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags: applicativeinbase
+dependencies: base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: async-2.0.1.4
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags:
+dependencies: stm-2.4.2 base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: pipes-concurrency-1.2.0
+os: linux
+arch: x86_64
+compiler: ghc-7.6.1
+client: cabal-install-1.16.0.2
+flags:
+dependencies: stm-2.4.2 pipes-3.3.0 base-4.6.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried

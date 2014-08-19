@@ -1,0 +1,173 @@
+Configuring sunroof-compiler-0.2.1...
+Building sunroof-compiler-0.2.1...
+Preprocessing library sunroof-compiler-0.2.1...
+[ 1 of 23] Compiling Language.Sunroof.Internal ( Language/Sunroof/Internal.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Internal.o )
+[ 2 of 23] Compiling Language.Sunroof.JavaScript ( Language/Sunroof/JavaScript.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JavaScript.o )
+
+Language/Sunroof/JavaScript.hs:31:1: Warning:
+    The import of ‘Applicative’
+    from module ‘Control.Applicative’ is redundant
+[ 3 of 23] Compiling Language.Sunroof.Classes ( Language/Sunroof/Classes.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Classes.o )
+[ 4 of 23] Compiling Language.Sunroof.JS.Bool ( Language/Sunroof/JS/Bool.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Bool.o )
+[ 5 of 23] Compiling Language.Sunroof.JS.Object ( Language/Sunroof/JS/Object.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Object.o )
+[ 6 of 23] Compiling Language.Sunroof.JS.Number ( Language/Sunroof/JS/Number.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Number.o )
+[ 7 of 23] Compiling Language.Sunroof.JS.String ( Language/Sunroof/JS/String.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/String.o )
+[ 8 of 23] Compiling Language.Sunroof.Selector ( Language/Sunroof/Selector.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Selector.o )
+[ 9 of 23] Compiling Language.Sunroof.Types ( Language/Sunroof/Types.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Types.o )
+
+Language/Sunroof/Types.hs:122:10: Warning:
+    ‘JS’ is an instance of Monad but not Applicative - this will become an error in GHC 7.10, under the Applicative-Monad Proposal.
+[10 of 23] Compiling Language.Sunroof.Utils ( Language/Sunroof/Utils.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Utils.o )
+[11 of 23] Compiling Language.Sunroof.TH ( Language/Sunroof/TH.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/TH.o )
+[12 of 23] Compiling Language.Sunroof.Compiler ( Language/Sunroof/Compiler.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Compiler.o )
+[13 of 23] Compiling Language.Sunroof.JS.Ref ( Language/Sunroof/JS/Ref.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Ref.o )
+[14 of 23] Compiling Language.Sunroof.JS.Map ( Language/Sunroof/JS/Map.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Map.o )
+[15 of 23] Compiling Language.Sunroof.JS.Browser ( Language/Sunroof/JS/Browser.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Browser.o )
+[16 of 23] Compiling Language.Sunroof.Concurrent ( Language/Sunroof/Concurrent.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Concurrent.o )
+[17 of 23] Compiling Language.Sunroof.JS.Date ( Language/Sunroof/JS/Date.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Date.o )
+[18 of 23] Compiling Language.Sunroof.JS.Canvas ( Language/Sunroof/JS/Canvas.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Canvas.o )
+[19 of 23] Compiling Language.Sunroof.JS.JQuery ( Language/Sunroof/JS/JQuery.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/JQuery.o )
+[20 of 23] Compiling Language.Sunroof.JS.Array ( Language/Sunroof/JS/Array.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Array.o )
+[21 of 23] Compiling Language.Sunroof.JS.Chan ( Language/Sunroof/JS/Chan.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Chan.o )
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Loading package Boolean-0.2.1 ... linking ... done.
+Loading package array-0.5.0.0 ... linking ... done.
+Loading package deepseq-1.3.0.2 ... linking ... done.
+Loading package bytestring-0.10.4.0 ... linking ... done.
+Loading package text-1.1.1.3 ... linking ... done.
+Loading package hashable-1.2.2.0 ... linking ... done.
+Loading package containers-0.5.5.1 ... linking ... done.
+Loading package nats-0.2 ... linking ... done.
+Loading package unordered-containers-0.2.4.0 ... linking ... done.
+Loading package semigroups-0.15.1 ... linking ... done.
+Loading package void-0.6.1 ... linking ... done.
+Loading package MemoTrie-0.6.2 ... linking ... done.
+Loading package NumInstances-1.3 ... linking ... done.
+Loading package vector-space-0.8.7 ... linking ... done.
+Loading package pretty-1.1.1.1 ... linking ... done.
+Loading package template-haskell ... linking ... done.
+Loading package tagged-0.7.2 ... linking ... done.
+Loading package transformers-0.3.0.0 ... linking ... done.
+Loading package mtl-2.1.3.1 ... linking ... done.
+Loading package old-locale-1.0.0.6 ... linking ... done.
+Loading package time-1.4.2 ... linking ... done.
+Loading package random-1.0.1.1 ... linking ... done.
+Loading package operational-0.2.3.2 ... linking ... done.
+Loading package data-reify-0.6 ... linking ... done.
+Loading package data-default-class-0.0.1 ... linking ... done.
+Loading package data-default-instances-base-0.0.1 ... linking ... done.
+Loading package data-default-instances-containers-0.0.1 ... linking ... done.
+Loading package dlist-0.7.0.1 ... linking ... done.
+Loading package data-default-instances-dlist-0.0.1 ... linking ... done.
+Loading package data-default-instances-old-locale-0.0.1 ... linking ... done.
+Loading package data-default-0.5.3 ... linking ... done.
+[22 of 23] Compiling Language.Sunroof.JS.MVar ( Language/Sunroof/JS/MVar.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/MVar.o )
+[23 of 23] Compiling Language.Sunroof ( Language/Sunroof.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof.o )
+[ 1 of 23] Compiling Language.Sunroof.Internal ( Language/Sunroof/Internal.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Internal.p_o )
+[ 2 of 23] Compiling Language.Sunroof.JavaScript ( Language/Sunroof/JavaScript.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JavaScript.p_o )
+
+Language/Sunroof/JavaScript.hs:31:1: Warning:
+    The import of ‘Applicative’
+    from module ‘Control.Applicative’ is redundant
+[ 3 of 23] Compiling Language.Sunroof.Classes ( Language/Sunroof/Classes.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Classes.p_o )
+[ 4 of 23] Compiling Language.Sunroof.JS.Bool ( Language/Sunroof/JS/Bool.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Bool.p_o )
+[ 5 of 23] Compiling Language.Sunroof.JS.Object ( Language/Sunroof/JS/Object.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Object.p_o )
+[ 6 of 23] Compiling Language.Sunroof.JS.Number ( Language/Sunroof/JS/Number.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Number.p_o )
+[ 7 of 23] Compiling Language.Sunroof.JS.String ( Language/Sunroof/JS/String.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/String.p_o )
+[ 8 of 23] Compiling Language.Sunroof.Selector ( Language/Sunroof/Selector.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Selector.p_o )
+[ 9 of 23] Compiling Language.Sunroof.Types ( Language/Sunroof/Types.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Types.p_o )
+
+Language/Sunroof/Types.hs:122:10: Warning:
+    ‘JS’ is an instance of Monad but not Applicative - this will become an error in GHC 7.10, under the Applicative-Monad Proposal.
+[10 of 23] Compiling Language.Sunroof.Utils ( Language/Sunroof/Utils.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Utils.p_o )
+[11 of 23] Compiling Language.Sunroof.TH ( Language/Sunroof/TH.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/TH.p_o )
+[12 of 23] Compiling Language.Sunroof.Compiler ( Language/Sunroof/Compiler.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Compiler.p_o )
+[13 of 23] Compiling Language.Sunroof.JS.Ref ( Language/Sunroof/JS/Ref.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Ref.p_o )
+[14 of 23] Compiling Language.Sunroof.JS.Map ( Language/Sunroof/JS/Map.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Map.p_o )
+[15 of 23] Compiling Language.Sunroof.JS.Browser ( Language/Sunroof/JS/Browser.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Browser.p_o )
+[16 of 23] Compiling Language.Sunroof.Concurrent ( Language/Sunroof/Concurrent.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/Concurrent.p_o )
+[17 of 23] Compiling Language.Sunroof.JS.Date ( Language/Sunroof/JS/Date.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Date.p_o )
+[18 of 23] Compiling Language.Sunroof.JS.Canvas ( Language/Sunroof/JS/Canvas.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Canvas.p_o )
+[19 of 23] Compiling Language.Sunroof.JS.JQuery ( Language/Sunroof/JS/JQuery.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/JQuery.p_o )
+[20 of 23] Compiling Language.Sunroof.JS.Array ( Language/Sunroof/JS/Array.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Array.p_o )
+[21 of 23] Compiling Language.Sunroof.JS.Chan ( Language/Sunroof/JS/Chan.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/Chan.p_o )
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Loading package Boolean-0.2.1 ... linking ... done.
+Loading package array-0.5.0.0 ... linking ... done.
+Loading package deepseq-1.3.0.2 ... linking ... done.
+Loading package bytestring-0.10.4.0 ... linking ... done.
+Loading package text-1.1.1.3 ... linking ... done.
+Loading package hashable-1.2.2.0 ... linking ... done.
+Loading package containers-0.5.5.1 ... linking ... done.
+Loading package nats-0.2 ... linking ... done.
+Loading package unordered-containers-0.2.4.0 ... linking ... done.
+Loading package semigroups-0.15.1 ... linking ... done.
+Loading package void-0.6.1 ... linking ... done.
+Loading package MemoTrie-0.6.2 ... linking ... done.
+Loading package NumInstances-1.3 ... linking ... done.
+Loading package vector-space-0.8.7 ... linking ... done.
+Loading package pretty-1.1.1.1 ... linking ... done.
+Loading package template-haskell ... linking ... done.
+Loading package tagged-0.7.2 ... linking ... done.
+Loading package transformers-0.3.0.0 ... linking ... done.
+Loading package mtl-2.1.3.1 ... linking ... done.
+Loading package old-locale-1.0.0.6 ... linking ... done.
+Loading package time-1.4.2 ... linking ... done.
+Loading package random-1.0.1.1 ... linking ... done.
+Loading package operational-0.2.3.2 ... linking ... done.
+Loading package data-reify-0.6 ... linking ... done.
+Loading package data-default-class-0.0.1 ... linking ... done.
+Loading package data-default-instances-base-0.0.1 ... linking ... done.
+Loading package data-default-instances-containers-0.0.1 ... linking ... done.
+Loading package dlist-0.7.0.1 ... linking ... done.
+Loading package data-default-instances-dlist-0.0.1 ... linking ... done.
+Loading package data-default-instances-old-locale-0.0.1 ... linking ... done.
+Loading package data-default-0.5.3 ... linking ... done.
+[22 of 23] Compiling Language.Sunroof.JS.MVar ( Language/Sunroof/JS/MVar.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof/JS/MVar.p_o )
+[23 of 23] Compiling Language.Sunroof ( Language/Sunroof.hs, dist/dist-sandbox-b409b4a/build/Language/Sunroof.p_o )
+In-place registering sunroof-compiler-0.2.1...
+Running Haddock for sunroof-compiler-0.2.1...
+Preprocessing library sunroof-compiler-0.2.1...
+
+dist/dist-sandbox-b409b4a/build/tmp-16941/Language/Sunroof/JavaScript.hs:31:1: Warning:
+    The import of ‘Applicative’
+    from module ‘Control.Applicative’ is redundant
+
+dist/dist-sandbox-b409b4a/build/tmp-16941/Language/Sunroof/Types.hs:122:10: Warning:
+    ‘JS’ is an instance of Monad but not Applicative - this will become an error in GHC 7.10, under the Applicative-Monad Proposal.
+Haddock coverage:
+ 100% (  3 /  3) in 'Language.Sunroof.Internal'
+ 100% ( 15 / 15) in 'Language.Sunroof.JavaScript'
+ 100% (  8 /  8) in 'Language.Sunroof.Classes'
+ 100% (  3 /  3) in 'Language.Sunroof.JS.Bool'
+ 100% (  4 /  4) in 'Language.Sunroof.JS.Object'
+ 100% (  3 /  3) in 'Language.Sunroof.JS.Number'
+ 100% (  3 /  3) in 'Language.Sunroof.JS.String'
+ 100% (  6 /  6) in 'Language.Sunroof.Selector'
+ 100% ( 34 / 34) in 'Language.Sunroof.Types'
+ 100% (  3 /  3) in 'Language.Sunroof.Utils'
+ 100% (  2 /  2) in 'Language.Sunroof.TH'
+ 100% (  5 /  5) in 'Language.Sunroof.Compiler'
+ 100% (  6 /  6) in 'Language.Sunroof.JS.Ref'
+  83% (  5 /  6) in 'Language.Sunroof.JS.Map'
+ 100% ( 50 / 50) in 'Language.Sunroof.JS.Browser'
+ 100% (  5 /  5) in 'Language.Sunroof.Concurrent'
+ 100% ( 46 / 46) in 'Language.Sunroof.JS.Date'
+ 100% ( 68 / 68) in 'Language.Sunroof.JS.Canvas'
+ 100% ( 32 / 32) in 'Language.Sunroof.JS.JQuery'
+ 100% ( 13 / 13) in 'Language.Sunroof.JS.Array'
+ 100% (  5 /  5) in 'Language.Sunroof.JS.Chan'
+ 100% (  6 /  6) in 'Language.Sunroof.JS.MVar'
+ 100% ( 98 / 98) in 'Language.Sunroof'
+Warning: Language.Sunroof.JavaScript: could not find link destinations for:
+    Language.Sunroof.JavaScript.isIdentifier
+Documentation created:
+dist/dist-sandbox-b409b4a/doc/html/sunroof-compiler/index.html
+Creating package registration file: /tmp/pkgConf-sunroof-compiler-0.216433.1
+Installing library in
+/home/kcarter/scrap/haskell/sunroof-test/lib/sunroof-compiler-0.2/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.2/sunroof-compiler-0.2.1
+Registering sunroof-compiler-0.2.1...

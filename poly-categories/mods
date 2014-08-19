@@ -1,0 +1,11 @@
+Control.Categorical.Bifunctor
+Control.Categorical.Functor
+Control.Categorical.Object
+Control.Category.Associative
+Control.Category.Braided
+Control.Category.Cartesian
+Control.Category.Cartesian.Closed
+Control.Category.Discrete
+Control.Category.Distributive
+Control.Category.Dual
+Control.Category.Monoidal

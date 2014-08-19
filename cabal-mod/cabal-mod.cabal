@@ -1,0 +1,41 @@
+name: cabal-mod
+version: 0.1.0.0
+cabal-version: >=1.10
+build-type: Simple
+license: BSD3
+license-file: LICENSE
+maintainer: kcarter@galois.com
+ 
+library
+    build-depends:
+        base -any,
+        Cabal >=1.20,
+        lens -any,
+        Glob -any,
+        directory -any,
+        filepath -any,
+        optparse-applicative -any
+    exposed-modules:
+        Distribution.PackageDescription.Lens
+        Distribution.PackageDescription.Modify
+    exposed: True
+    buildable: True
+    default-language: Haskell2010
+    hs-source-dirs: src
+ 
+executable cabal-mod
+    build-depends:
+        base -any,
+        Cabal >=1.20,
+        lens -any,
+        Glob -any,
+        directory -any,
+        filepath -any,
+        optparse-applicative -any,
+        cabal-mod -any
+    main-is: Main.hs
+    buildable: True
+    default-language: Haskell2010
+    hs-source-dirs: src
+ 
+ 

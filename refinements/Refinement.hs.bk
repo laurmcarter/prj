@@ -1,0 +1,176 @@
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE PolyKinds #-}
+
+module Data.Constraint.Refinement where
+
+import Prelude hiding (id,(.))
+import Control.Category (Category(..))
+import qualified Control.Category as Cat
+import Data.Type.Equality
+import GHC.Exts (Constraint)
+import Data.Proxy
+
+type f :-> g = forall (a :: *). f a -> g a
+type Up   f  = forall (a :: *).   a -> f a
+type Down f  = forall (a :: *). f a ->   a
+
+data F f g = F  (f :-> g) (g :-> f)
+data C'  f = C' (Down f)  (Up f)
+data C   f = C  (Up f)    (Down f)
+data T a b = T  (a -> b)  (b -> a)
+data I     = I
+
+
+-- Single Refinements {{{
+
+class Refine (t :: *) (x :: *) (y :: *) where
+  refine :: p0 t -> p1 x -> p2 y -> x :~: y
+
+instance (x ~ f a) => Refine (F f g) x (f a) where
+  refine _ _ _ = Refl
+
+instance (x ~ a) => Refine (T a b) x a where
+  refine _ _ _ = Refl
+
+instance (x ~ a) => Refine (C f) x a where
+  refine _ _ _ = Refl
+
+instance (x ~ f a) => Refine (C' f) x (f a) where
+  refine _ _ _ = Refl
+
+instance (x ~ y) => Refine I x y where
+  refine _ _ _ = Refl
+
+-- }}}
+
+-- Composing a list of Refinements {{{
+
+class Refinements (ts :: [*]) (y :: *) (x :: *) where
+  refinements :: p0 ts -> p1 x -> p2 y -> x :~: y
+
+instance (x ~ y) => Refinements '[] y x where
+  refinements _ _ _ = Refl
+
+instance (Refine t x y, Refinements ts z y)
+  => Refinements (t ': ts) z x where
+  refinements _ x z = r1 `trans` rs
+    where
+    y :: Proxy y
+    y  = Proxy
+    ----
+    r1 :: x :~: y
+    r1  = refine      (Proxy :: Proxy t)  x y
+    ----
+    rs :: y :~: z
+    rs  = refinements (Proxy :: Proxy ts) y z
+
+data (a :: *) :=: (b :: *) where
+  Final :: a :~: b -> a :=: b
+  (:&)  :: a :~: b -> b :=: c -> a :=: c
+infixr 4 :&
+
+instance Category (:=:) where
+  id    = Final Refl
+  p . q = case q of
+    Final eq -> eq :& p
+    eq :& q' -> eq :& p . q'
+
+class    Composable (ts :: [*]) where
+  type CompReq ts (y :: *) (x :: *) :: Constraint
+  compose :: Proof (Refinements ts y x) -> Proof (CompReq ts y x) -> p0 ts -> p1 x -> p2 y -> x :=: y
+
+instance Composable '[] where
+  type CompReq '[] x y = ()
+  compose Proof Proof _ x y = Final
+    $ refinements (Proxy :: Proxy '[]) x y
+
+instance Composable ts => Composable (t ': ts) where
+  type CompReq (t ': ts) z x = Exists '[Refine t x, Refinements ts z,CompReq]
+  compose
+    (Proof :: Proof (Refinements (t ': ts) y x))
+    (Proof :: Proof (Exists '[Refine t x, Refinements ts z,CompReq ts z]))
+    _ (x :: p0 x) (z :: p1 z) = _
+
+data E (f :: k -> *) = forall (a :: k). E (f a)
+
+class    Exists (cs :: [k -> Constraint]) where
+  exists :: E (Proofs cs)
+instance Each cs x => Exists cs where
+  exists = E (each :: Proofs cs x)
+
+class    Each (cs :: [k -> Constraint]) (a :: k) where
+  each :: Proofs cs a
+instance Each '[] a where
+  each = None
+instance (c a, Each cs a) => Each (c ': cs) a where
+  each = More Proof each
+
+{-
+instance Composable ts => Composable (I ': ts) where
+  type CompReq (I ': ts) x y = (Refinements ts x y,CompReq ts x y)
+  compose _ (x :: p0 x) (y :: p1 y) =
+       refine  (Proxy :: Proxy I)  x x
+    :& compose (Proxy :: Proxy ts) x y
+-}
+
+{-
+instance Composable ts => Composable (F f g ': ts) where
+  type CompReq (F f g ': ts) x y = (Refine 
+-}
+
+-- }}}
+
+-- Data Representation of Refinements {{{
+
+data Ts (ts :: [*]) where
+  Nil  :: Ts '[]
+  (:>) :: t -> Ts ts -> Ts (t ': ts)
+infixr 4 :>
+
+{-
+(<:) :: t1 -> t2 -> Ts '[t1,t2]
+t1 <: t2 = t1 :> t2 :> Nil
+infix 5 <:
+-}
+
+-- }}}
+
+newtype Id a = Id
+  { runId :: a
+  }
+
+_Id :: C Id
+_Id  = C Id runId
+
+newtype Foo a = Foo
+  { runFoo :: Id a
+  }
+
+_Foo :: F Id Foo
+_Foo  = F Foo runFoo
+
+{-
+l0 :: Ts '[C Id,F Id Foo]
+l0 = _Id <: _Foo
+-}
+
+data Proof (c :: Constraint) where
+  Proof :: c => Proof c
+
+data Proofs (cs :: [k -> Constraint]) (a :: k) where
+  None :: Proofs '[] a
+  More :: Proof (c a) -> Proofs cs a -> Proofs (c ': cs) a
+

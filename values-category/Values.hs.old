@@ -1,0 +1,122 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE PolyKinds #-}
+
+module Control.Category.Values where
+
+import Control.Category
+import Prelude hiding ((.),id,(++))
+import qualified Prelude as P
+import GHC.Exts (Constraint)
+import Data.Type.Equality
+
+type family (xs :: [k]) ++ (ys :: [k]) :: [k] where
+  '[]       ++ ys = ys
+  (x ': xs) ++ ys = x ': (xs ++ ys)
+
+data List (a :: [*]) where
+  Nil  :: List '[]
+  Cons :: a -> List as -> List (a ': as)
+
+class HShow (t :: k -> *) where
+  type HShowC t (i :: k) :: Constraint
+  hShowsPrec :: HShowC t i => Int -> t i -> ShowS
+  hShow :: HShowC t i => t i -> String
+  hShow t = hShowsPrec 0 t ""
+
+instance HShow List where
+  type HShowC List '[]       = ()
+  type HShowC List (a ': as) = (Show a, HShowC List as)
+  hShowsPrec d ls = case ls of
+    Nil        -> showString "Nil"
+    Cons a ls' -> showParen (d > 10)
+      $ showString "Cons "
+      . showsPrec 11 a
+      . showChar ' '
+      . hShowsPrec 11 ls'
+
+l0 :: List '[Int,Bool,Double]
+l0 = Cons 1 $ Cons True $ Cons 4.0 Nil
+
+class HEq (t :: k -> *) where
+  type HEqC t (i :: k) (j :: k) :: Constraint
+  hEq, hNe :: HEqC t i j => t i -> t j -> Bool
+  hNe x y = not $ hEq x y
+
+instance HEq List where
+  type HEqC List as bs = HEqList as bs
+  hEq as bs = case (as,bs) of
+    (Nil,Nil) -> True
+    (Cons a as',Cons b bs') -> a == b && hEq as' bs'
+    _ -> False
+
+type family HEqList (as :: [*]) (bs :: [*]) :: Constraint where
+  HEqList (a ': as) (b ': bs) = (a ~ b, Eq a, HEqList as bs)
+  HEqList  as        bs       = ()
+
+l1 :: List '[Int,Bool,Double]
+l1 = Cons 1 $ Cons False $ Cons 4.1 Nil
+
+l2 :: List '[Int]
+l2 = Cons 4 Nil
+
+class HEqual (t :: k -> *) where
+  type HEqualR t (i :: k) (j :: k) :: Maybe Constraint
+  hEqual :: t i -> t j -> MDict (HEqualR t i j)
+
+instance HEqual List where
+  type HEqualR List as bs = TEq as bs
+  hEqual x y = case x of
+    Nil       -> case y of
+      Nil       -> Restricted
+      Cons b y' -> Unrestricted
+    Cons (a :: a) (x' :: List as') -> case y of
+      Nil       -> Unrestricted
+      Cons (b :: b) (y' :: List bs') ->
+        case (hEqual x' y' :: MDict (TEq as' bs')) of
+          Unrestricted    -> Unrestricted
+          Restricted      -> Implied $ \Dict -> Dict
+          Implied f       -> Implied $ \(Dict :: Dict (a ~ b)) -> _
+
+data Dict (c :: Constraint) where
+  Dict :: c => Dict c
+
+data MDict (mc :: Maybe Constraint) where
+  Restricted   :: c => MDict (Just c)
+  Unrestricted :: MDict Nothing
+  Implied      :: (Dict a -> MDict (Just b)) -> MDict (Just (a :=> b))
+
+type family MC (mc :: Maybe Constraint) :: Constraint where
+  MC Nothing  = ()
+  MC (Just c) = c
+
+type family HEqualList (as :: [*]) (bs :: [*]) :: * where
+  HEqualList (a ': as) (b ': bs) = (a :~: b,HEqualList as bs)
+  HEqualList  as        bs       = ()
+
+type family TEq (a :: [*]) (b :: [*]) :: Maybe Constraint where
+  TEq '[]       '[]       = Just (() :: Constraint)
+  TEq (a ': as) (b ': bs) = MaybeAp ((:=>) (a ~ b)) (TEq as bs)
+  TEq '[]       (b ': bs) = Nothing
+  TEq (a ': as) '[]       = Nothing
+
+type family MaybeBind (ma :: Maybe a) (f :: a -> Maybe b) :: Maybe b where
+  MaybeBind Nothing  f = Nothing
+  MaybeBind (Just a) f = f a
+
+type family MaybeAp (f :: a -> b) (ma :: Maybe a) :: Maybe b where
+  MaybeAp f (Just a) = Just (f a)
+  MaybeAp f Nothing  = Nothing
+
+class    (c,d) => c :*: d
+instance (c,d) => c :*: d
+
